@@ -45,16 +45,26 @@ export const loadContext = cache(async (): Promise<ContextResult> => {
     supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle(),
   ]);
 
-  const households: HouseholdMembership[] = (memberships ?? [])
-    .filter((m: { household: unknown }) => m.household)
-    .map((m: { role: HouseholdRole; household: Household }) => ({
-      role: m.role,
+
+const households: HouseholdMembership[] = (memberships ?? [])
+  .map((m) => {
+    const relatedHousehold = Array.isArray(m.household)
+      ? m.household[0]
+      : m.household;
+
+    if (!relatedHousehold) return null;
+
+    return {
+      role: m.role as HouseholdRole,
       household: {
-        ...m.household,
-        expiry_warning_days: num(m.household.expiry_warning_days),
-        restock_multiplier: num(m.household.restock_multiplier),
+        ...relatedHousehold,
+        expiry_warning_days: num(relatedHousehold.expiry_warning_days),
+        restock_multiplier: num(relatedHousehold.restock_multiplier),
       },
-    }));
+    };
+  })
+  .filter((m): m is HouseholdMembership => m !== null);
+
 
   const sessionUser = { id: user.id, email: user.email ?? null };
   if (households.length === 0) return { status: "no-household", supabase, user: sessionUser };

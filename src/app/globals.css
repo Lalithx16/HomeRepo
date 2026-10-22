@@ -1,0 +1,214 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ==========================================================================
+   Homebase design tokens
+   Components use semantic tokens (bg-surface, text-muted-foreground, ...)
+   instead of raw colors, so both themes stay consistent.
+   ========================================================================== */
+:root {
+  --background: #f7f7f5;
+  --surface: #ffffff;
+  --surface-muted: #f1f1ee;
+  --surface-hover: #f4f4f1;
+  --foreground: #202124;
+  --muted-foreground: #63676e;
+  --subtle-foreground: #8a8e95;
+  --border: #e6e7e5;
+  --border-strong: #d7d8d5;
+  --input: #dcddd9;
+  --ring: #287a58;
+
+  --primary: #287a58;
+  --primary-hover: #226a4c;
+  --primary-foreground: #ffffff;
+  --primary-soft: #e8f2ec;
+  --primary-soft-foreground: #1d5c41;
+
+  --success: #2b7a4b;
+  --success-soft: #e7f3eb;
+  --warning: #8f5600;
+  --warning-soft: #fcf1de;
+  --critical: #b23a33;
+  --critical-soft: #fbeceb;
+  --info: #2c62b0;
+  --info-soft: #e9f0fb;
+
+  --overlay: rgb(20 21 23 / 0.36);
+  --shadow-color: 220 10% 20%;
+  --radius: 14px;
+  color-scheme: light;
+}
+
+.dark {
+  --background: #111213;
+  --surface: #191a1c;
+  --surface-muted: #212225;
+  --surface-hover: #232427;
+  --foreground: #ececed;
+  --muted-foreground: #a3a6ac;
+  --subtle-foreground: #7f838a;
+  --border: #2a2b2f;
+  --border-strong: #36383c;
+  --input: #3a3c41;
+  --ring: #4fb486;
+
+  --primary: #2f855c;
+  --primary-hover: #36916a;
+  --primary-foreground: #ffffff;
+  --primary-soft: #18291f;
+  --primary-soft-foreground: #8ad3b0;
+
+  --success: #6cc794;
+  --success-soft: #16261c;
+  --warning: #e9b45c;
+  --warning-soft: #2b2213;
+  --critical: #f08a82;
+  --critical-soft: #2f1a19;
+  --info: #8ab2f2;
+  --info-soft: #172235;
+
+  --overlay: rgb(0 0 0 / 0.6);
+  --shadow-color: 0 0% 0%;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-hover: var(--surface-hover);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-foreground: var(--primary-soft-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-critical: var(--critical);
+  --color-critical-soft: var(--critical-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-overlay: var(--overlay);
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: var(--radius);
+  --radius-2xl: 18px;
+
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI",
+    Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --shadow-card: 0 1px 2px hsl(var(--shadow-color) / 0.04), 0 1px 1px hsl(var(--shadow-color) / 0.02);
+  --shadow-raised: 0 8px 24px -8px hsl(var(--shadow-color) / 0.18), 0 2px 6px hsl(var(--shadow-color) / 0.06);
+  --shadow-fab: 0 10px 24px -6px hsl(152 50% 20% / 0.45);
+}
+
+@theme {
+  --animate-fade-in: hb-fade-in 160ms ease-out;
+  --animate-pop-in: hb-pop-in 180ms cubic-bezier(0.2, 0.9, 0.3, 1);
+  --animate-sheet-in: hb-sheet-in 260ms cubic-bezier(0.2, 0.9, 0.3, 1);
+  --animate-menu-in: hb-menu-in 140ms ease-out;
+
+  @keyframes hb-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes hb-pop-in {
+    from { opacity: 0; transform: translateY(6px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes hb-sheet-in {
+    from { transform: translateY(100%); }
+    to { transform: none; }
+  }
+  @keyframes hb-menu-in {
+    from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.6;
+    cursor: pointer;
+  }
+  .dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
+  /* Prevent iOS zoom on focus: inputs are at least 16px on small screens. */
+  @media (max-width: 639px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

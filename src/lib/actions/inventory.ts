@@ -58,10 +58,13 @@ export async function createItemAction(formData: FormData): Promise<ActionResult
       .eq("household_id", ctx.household.id)
       .ilike("name", escapeLike(input.name))
       .limit(5);
+
     const brand = (input.brand ?? "").trim().toLowerCase();
-    const match = (sameName ?? []).find(
-      (p: { brand: { name: string } | null }) => (p.brand?.name ?? "").toLowerCase() === brand,
-    ) as { id: string; name: string } | undefined;
+const match = (sameName ?? []).find((p) => {
+  const relatedBrand = Array.isArray(p.brand) ? p.brand[0] : p.brand;
+  return (relatedBrand?.name ?? "").trim().toLowerCase() === brand;
+});
+
     if (match) {
       return fail("duplicate", `You already track “${match.name}”. Add this as a new batch instead?`, {
         meta: { productId: match.id, productName: match.name },

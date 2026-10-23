@@ -7,7 +7,10 @@ export async function listMembers(ctx: AppContext): Promise<MemberRow[]> {
     .select("user_id, role, created_at, profile:profiles(email, display_name)")
     .eq("household_id", ctx.household.id)
     .order("created_at");
-  return (data ?? []) as MemberRow[];
+  return (data ?? []).map((row) => ({
+    ...row,
+    profile: Array.isArray(row.profile) ? row.profile[0] ?? null : row.profile,
+  })) as MemberRow[];
 }
 
 export async function listInvitations(ctx: AppContext): Promise<InvitationRow[]> {

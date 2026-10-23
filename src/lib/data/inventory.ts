@@ -204,7 +204,21 @@ export async function getRatings(ctx: AppContext, productId: string, brandId: st
     updated_at: string;
     profile: { display_name: string | null; email: string | null } | null;
   };
-  return { product: (product.data ?? []) as R[], brand: (brand.data ?? []) as R[] };
+
+  type RawR = Omit<R, "profile"> & {
+    profile: R["profile"] | NonNullable<R["profile"]>[];
+  };
+
+  const normalizeRatings = (rows: unknown[]): R[] =>
+    (rows as RawR[]).map((row) => ({
+      ...row,
+      profile: Array.isArray(row.profile) ? row.profile[0] ?? null : row.profile,
+    }));
+
+  return {
+    product: normalizeRatings(product.data ?? []),
+    brand: normalizeRatings(brand.data ?? []),
+  };
 }
 
 /** Creates short-lived signed URLs for private item photos. */
